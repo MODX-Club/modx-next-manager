@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/camelcase */
 import { FieldResolver } from 'nexus'
 import { NexusGenObjects } from '../../../generated/nexus'
@@ -33,60 +34,62 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
      */
     redirect: 'manual', // manual, *follow, error
     body: formBody,
-  })
-    .then(async (r) => {
-      const setCookie = await r.headers.get('set-cookie')
+  }).then(async (r) => {
+    const setCookie = await r.headers.get('set-cookie')
 
-      if (setCookie) {
-        const PHPSESSID = setCookie
-          .split(';')
-          .find((n) => n.startsWith('PHPSESSID'))
+    console.log('setCookie', setCookie)
+
+    if (setCookie) {
+      const PHPSESSID = setCookie
+        .split(';')
+        .find((n) => n.startsWith('PHPSESSID'))
+
+      /**
+       * Запрашиваем код админки, чтобы получить токен.
+       * Приходится именно на страницу профиля заходить, чтобы найти ID текущего пользователя.
+       */
+      return await fetch(ctx.config.managerUrl + '?a=security/profile', {
+        headers: {
+          cookie: PHPSESSID || '',
+        },
+      }).then(async (r) => {
+        const response2 = await r.text()
+
+        console.log('response2', response2)
 
         /**
-         * Запрашиваем код админки, чтобы получить токен.
-         * Приходится именно на страницу профиля заходить, чтобы найти ID текущего пользователя.
+         * ищем в ответе токен
          */
-        return await fetch(ctx.config.managerUrl + '?a=security/profile', {
-          headers: {
-            cookie: PHPSESSID || '',
-          },
-        })
-          .then(async (r) => {
-            const response2 = await r.text()
+        const tokenMatch = response2.match(/"?auth"?: ?"(.+?)"/)
 
-            /**
-             * ищем в ответе токен
-             */
-            const tokenMatch = response2.match(/"?auth"?: ?"(.+?)"/)
+        const token = tokenMatch && tokenMatch[1]
 
-            const token = tokenMatch && tokenMatch[1]
+        console.log('token', token)
 
-            // console.log('token', token);
+        /**
+         * ищем в ответе ID пользователя. Без него мы не сможем получать объект текущего пользователя
+         */
+        const userIdMatch = response2.match(/user: "(\d+?)"/)
 
-            /**
-             * ищем в ответе ID пользователя. Без него мы не сможем получать объект текущего пользователя
-             */
-            const userIdMatch = response2.match(/user: "(\d+?)"/)
+        const userId = userIdMatch && userIdMatch[1]
 
-            const userId = userIdMatch && userIdMatch[1]
+        console.log('userId', userId)
 
-            // console.log('userId', userId);
+        if (token && userId) {
+          /**
+           * Устанавливаем куки авторизованного пользователя
+           */
+          ctx.res?.cookie(setCookie, undefined)
 
-            if (token && userId) {
-              /**
-               * Устанавливаем куки авторизованного пользователя
-               */
-              ctx.res?.cookie(setCookie, undefined)
+          return { token, userId: parseInt(userId) }
+        }
 
-              return { token, userId: parseInt(userId) }
-            }
-
-            return null
-          })
-          .catch(console.error)
-      }
-    })
-    .catch(console.error)
+        return null
+      })
+      // .catch(console.error)
+    }
+  })
+  // .catch(console.error)
 
   if (!result) {
     throw new Error('Ошибка авторизации')
