@@ -22,6 +22,8 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
   formBody.append('login', '1')
   formBody.append('returnUrl', '/manager/')
 
+  console.log('ctx.config.managerUrl', ctx.config.managerUrl)
+
   const result = await fetch(ctx.config.managerUrl, {
     method: 'POST',
     headers: {
@@ -38,6 +40,8 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
     const setCookie = await r.headers.get('set-cookie')
 
     console.log('setCookie', setCookie)
+
+    console.log('r.headers', r.headers)
 
     if (setCookie) {
       const PHPSESSID = setCookie
