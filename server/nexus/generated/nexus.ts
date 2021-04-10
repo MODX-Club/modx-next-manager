@@ -32,7 +32,12 @@ declare global {
   interface NexusGen extends NexusGenTypes {}
 }
 
-export interface NexusGenInputs {}
+export interface NexusGenInputs {
+  UserWhereUniqueInput: {
+    // input type
+    id: number // Int!
+  }
+}
 
 export interface NexusGenEnums {}
 
@@ -46,6 +51,11 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  AuthPayload: {
+    // root type
+    token: string // String!
+    userId: number // Int!
+  }
   Mutation: {}
   Query: {}
   User: {
@@ -53,6 +63,11 @@ export interface NexusGenObjects {
     active: boolean // Boolean!
     id: number // Int!
     username: string // String!
+  }
+  UsersConnectionResponse: {
+    // root type
+    total: number // Int!
+    users: NexusGenRootTypes['User'][] // [User!]!
   }
 }
 
@@ -65,13 +80,20 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  AuthPayload: {
+    // field return type
+    token: string // String!
+    userId: number // Int!
+  }
   Mutation: {
     // field return type
-    signin: string | null // String
+    signin: NexusGenRootTypes['AuthPayload'] | null // AuthPayload
   }
   Query: {
     // field return type
-    users: NexusGenRootTypes['User'][] // [User!]!
+    me: NexusGenRootTypes['User'] | null // User
+    user: NexusGenRootTypes['User'] | null // User
+    usersConnection: NexusGenRootTypes['UsersConnectionResponse'] // UsersConnectionResponse!
   }
   User: {
     // field return type
@@ -79,22 +101,39 @@ export interface NexusGenFieldTypes {
     id: number // Int!
     username: string // String!
   }
+  UsersConnectionResponse: {
+    // field return type
+    total: number // Int!
+    users: NexusGenRootTypes['User'][] // [User!]!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
+  AuthPayload: {
+    // field return type name
+    token: 'String'
+    userId: 'Int'
+  }
   Mutation: {
     // field return type name
-    signin: 'String'
+    signin: 'AuthPayload'
   }
   Query: {
     // field return type name
-    users: 'User'
+    me: 'User'
+    user: 'User'
+    usersConnection: 'UsersConnectionResponse'
   }
   User: {
     // field return type name
     active: 'Boolean'
     id: 'Int'
     username: 'String'
+  }
+  UsersConnectionResponse: {
+    // field return type name
+    total: 'Int'
+    users: 'User'
   }
 }
 
@@ -107,6 +146,21 @@ export interface NexusGenArgTypes {
       username: string // String!
     }
   }
+  Query: {
+    me: {
+      // args
+      where: NexusGenInputs['UserWhereUniqueInput'] // UserWhereUniqueInput!
+    }
+    user: {
+      // args
+      where: NexusGenInputs['UserWhereUniqueInput'] // UserWhereUniqueInput!
+    }
+    usersConnection: {
+      // args
+      limit?: number | null // Int
+      start?: number | null // Int
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {}
@@ -115,7 +169,7 @@ export interface NexusGenTypeInterfaces {}
 
 export type NexusGenObjectNames = keyof NexusGenObjects
 
-export type NexusGenInputNames = never
+export type NexusGenInputNames = keyof NexusGenInputs
 
 export type NexusGenEnumNames = never
 

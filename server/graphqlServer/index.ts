@@ -18,11 +18,24 @@ export default new ApolloServer({
 
     return error
   },
-  context: async (_requestContext: ExpressContext): Promise<ApiContext> => {
-    return {
+  context: async (requestContext: ExpressContext): Promise<ApiContext> => {
+    const apiContext = {
       ...context,
-      req: _requestContext.req,
-      res: _requestContext.res,
+      req: requestContext.req,
+      res: requestContext.res,
     }
+
+    /**
+     * Если есть данные авторизации, пытаемся получить данные пользователя.
+     *
+     * Пока не делаем этого, так как у нас нет пока работы с данными без запроса к MODX,
+     * и на каждый API-запрос будет лишний запрос к MODX
+     */
+    // if(requestContext.req.headers.authorization && requestContext.req.headers.cookie) {
+
+    //   apiContext.user = await ...
+    // }
+
+    return apiContext
   },
 })

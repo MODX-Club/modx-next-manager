@@ -1,3 +1,5 @@
+import UiTheme from '@procraft/ui/dist/theme'
+
 /**
  * Размеры экранов
  */
@@ -20,6 +22,9 @@ const colors = {
  * Итоговая тема
  */
 const theme = {
+  ui: {
+    ...UiTheme.ui,
+  },
   colors,
   breakpoints,
 }

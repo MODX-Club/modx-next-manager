@@ -10,15 +10,17 @@ import * as Types from './types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-export type MeQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type MeQueryVariables = Types.Exact<{
+  where: Types.UserWhereUniqueInput;
+}>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: Types.Maybe<{ __typename?: 'User', id: string }> };
+export type MeQuery = { __typename?: 'Query', me?: Types.Maybe<{ __typename?: 'User', id: number }> };
 
 
 export const MeDocument = gql`
-    query me {
-  me {
+    query me($where: UserWhereUniqueInput!) {
+  me(where: $where) {
     id
   }
 }
@@ -36,10 +38,11 @@ export const MeDocument = gql`
  * @example
  * const { data, loading, error } = useMeQuery({
  *   variables: {
+ *      where: // value for 'where'
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+export function useMeQuery(baseOptions: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
         return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
       }
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {

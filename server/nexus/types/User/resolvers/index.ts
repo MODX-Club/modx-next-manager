@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable no-console */
 import { FieldResolver } from 'nexus'
+import { NexusGenObjects } from 'server/nexus/generated/nexus'
+import { MODXListUser, MODXUser } from '..'
 
 /**
  * Авторизация
@@ -10,8 +11,6 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
   args,
   ctx
 ) => {
-  console.log('ctx.config', ctx.config)
-
   const { login_context, password, username } = args
 
   const formBody = new URLSearchParams()
@@ -38,18 +37,16 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
     .then(async (r) => {
       const setCookie = await r.headers.get('set-cookie')
 
-      console.log('signin setCookie', setCookie)
-
       if (setCookie) {
         const PHPSESSID = setCookie
           .split(';')
           .find((n) => n.startsWith('PHPSESSID'))
 
         /**
-         * Запрашиваем код админки, чтобы получить токен
+         * Запрашиваем код админки, чтобы получить токен.
+         * Приходится именно на страницу профиля заходить, чтобы найти ID текущего пользователя.
          */
-
-        return await fetch(ctx.config.managerUrl, {
+        return await fetch(ctx.config.managerUrl + '?a=security/profile', {
           headers: {
             cookie: PHPSESSID || '',
           },
@@ -60,18 +57,27 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
             /**
              * ищем в ответе токен
              */
-            const match = response2.match(/"auth":"(.+?)"/)
+            const tokenMatch = response2.match(/"auth":"(.+?)"/)
 
-            const token = match && match[1]
+            const token = tokenMatch && tokenMatch[1]
 
-            if (token) {
+            /**
+             * ищем в ответе ID пользователя. Без него мы не сможем получать объект текущего пользователя
+             */
+            const userIdMatch = response2.match(/user: "(\d+?)"/)
+
+            const userId = userIdMatch && userIdMatch[1]
+
+            if (token && userId) {
               /**
                * Устанавливаем куки авторизованного пользователя
                */
               ctx.res?.cookie(setCookie, undefined)
+
+              return { token, userId: parseInt(userId) }
             }
 
-            return token
+            return null
           })
           .catch(console.error)
       }
@@ -86,48 +92,98 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
 }
 
 /**
+ * Пользователь
+ */
+export const user: FieldResolver<'Query', 'user' | 'me'> = async (
+  _,
+  args,
+  ctx
+) => {
+  const { where } = args
+
+  if (!where.id) {
+    return null
+  }
+
+  const formBody = new URLSearchParams()
+
+  formBody.append('action', 'Security/User/Get')
+
+  type Name = keyof typeof where
+
+  Object.keys(where).forEach((name) => {
+    const value = where[name as Name]
+
+    if (value !== null && value !== undefined) {
+      formBody.append(name, value.toString())
+    }
+  })
+
+  return ctx
+    .connectorRequest<{
+      object?: MODXUser
+    }>(formBody, ctx)
+    .then(async (r) => {
+      return r.object || null
+    })
+}
+
+/**
  * Список пользователей
  */
-
-export const users: FieldResolver<'Query', 'users'> = async (_, _args, ctx) => {
+export const usersConnection: FieldResolver<
+  'Query',
+  'usersConnection'
+> = async (_, args, ctx) => {
   const formBody = new URLSearchParams()
 
   formBody.append('action', 'Security/User/GetList')
-  formBody.append('start', '0')
-  formBody.append('limit', '20')
 
-  console.log('ctx.req?.headers.cookie', ctx.req?.headers.cookie)
-  console.log('ctx.req?.signedCookies', ctx.req?.signedCookies)
-  console.log('ctx.req?.headers.authorization', ctx.req?.headers.authorization)
+  type Name = keyof typeof args
 
-  const result = fetch(ctx.config.connectorsrUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      cookie: ctx.req?.headers.cookie || '',
-      modAuth: ctx.req?.headers.authorization || '',
-    },
-    body: formBody,
-  }).then(async (r) => {
-    const response = await r.text()
+  Object.keys(args).forEach((name) => {
+    const value = args[name as Name]
 
-    console.log('users response', response)
-    console.log('users response headers', r.headers)
-    try {
-      const data = JSON.parse(response)
-
-      console.log('data', data)
-
-      return data.results || []
-    } catch (error) {
-      throw new Error(error)
+    if (value !== null && value !== undefined) {
+      formBody.append(name, value.toString())
     }
-
-    // return r;
   })
-  // .catch(console.error)
 
-  console.log('users result', result)
+  const result = await ctx
+    .connectorRequest<{
+      results?: MODXListUser[]
+    }>(formBody, ctx)
+    .then(async (r) => {
+      // const response = await r.text()
+
+      // console.log('users response', response)
+      // console.log('users response headers', r.headers)
+      // try {
+      //   const data = JSON.parse(response)
+
+      //   console.log('data', data)
+
+      //   return data.results || []
+      // } catch (error) {
+      //   throw new Error(error)
+      // }
+
+      const users: NexusGenObjects['User'][] = []
+
+      // return r.results || [];
+
+      r.results?.forEach((n) => {
+        if (n) {
+          users.push(n)
+        }
+      })
+
+      return {
+        users,
+        total: r.total || 0,
+      }
+    })
+  // .catch(console.error)
 
   return result
 }
