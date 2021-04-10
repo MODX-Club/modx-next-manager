@@ -3,6 +3,7 @@
 import { FieldResolver } from 'nexus'
 import { NexusGenObjects } from '../../../generated/nexus'
 import { MODXListUser, MODXUser } from '..'
+import { cookiesStore } from '../../../context'
 
 /**
  * Авторизация
@@ -85,7 +86,18 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
           /**
            * Устанавливаем куки авторизованного пользователя
            */
-          ctx.res?.cookie(setCookie, undefined)
+
+          /**
+           * Если есть метод, то используем его
+           */
+          if (ctx.res?.cookie) {
+            ctx.res?.cookie(setCookie, undefined)
+          } else {
+          /**
+           * Если нет, то используем хранилище
+           */
+            cookiesStore[token] = setCookie
+          }
 
           return { token, userId: parseInt(userId) }
         }
