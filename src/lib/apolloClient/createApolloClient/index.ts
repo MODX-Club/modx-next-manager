@@ -25,7 +25,7 @@ function getEndpoint() {
   const origin = global.location?.origin
 
   if (origin && process.env.NODE_ENV !== 'test') {
-    endpoint = `${origin}/api/`
+    endpoint = `${origin}/api`
   } else {
     // TODO fix for vercel.com
 
@@ -33,7 +33,7 @@ function getEndpoint() {
     const os = require('os')
     const hostname = os.hostname()
     const PORT = (process.env.PORT && parseInt(process.env.PORT, 10)) || 3000
-    endpoint = `http://${hostname}:${PORT}/api/`
+    endpoint = `http://${hostname}:${PORT}/api`
   }
 
   return endpoint

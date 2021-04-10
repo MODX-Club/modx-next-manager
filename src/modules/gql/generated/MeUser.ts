@@ -6,16 +6,16 @@
 */
 
 
-import { UserFragment } from './User';
+import { UserObjectFragment } from './UserObject';
 import { gql } from '@apollo/client';
-import { UserFragmentDoc } from './User';
+import { UserObjectFragmentDoc } from './UserObject';
 export type MeUserFragment = (
   { __typename?: 'User' }
-  & UserFragment
+  & UserObjectFragment
 );
 
 export const MeUserFragmentDoc = gql`
     fragment MeUser on User {
-  ...User
+  ...UserObject
 }
-    ${UserFragmentDoc}`;
+    ${UserObjectFragmentDoc}`;

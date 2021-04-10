@@ -6,11 +6,18 @@ import * as types from './types'
 
 export const DateTime = asNexusMethod(GraphQLDateTime, 'date')
 
+/**
+ * Приходится указывать абсолютный путь через процесс,
+ * так как при импорте из фронта next-js перебивает пути
+ */
+// https://nextjs.org/docs/basic-features/data-fetching#reading-files-use-processcwd
+const cwd = process.cwd()
+
 export const schema = makeSchema({
   /**
    * Надо будет перепроверить правильно ли использовать эти настройки
    */
-  // shouldGenerateArtifacts: process.env.NODE_ENV === 'development',
+  shouldGenerateArtifacts: process.env.NODE_ENV === 'development',
   // shouldExitAfterGenerateArtifacts: process.env.NODE_ENV !== 'development',
   plugins: [],
   types: {
@@ -18,11 +25,12 @@ export const schema = makeSchema({
     DateTime,
   },
   outputs: {
-    schema: __dirname + '/generated/schema.graphql',
-    typegen: __dirname + '/generated/nexus.ts',
+    schema: cwd + '/server/nexus/generated/schema.graphql',
+    typegen: cwd + '/server/nexus/generated/nexus.ts',
   },
   contextType: {
-    module: require.resolve('./context'),
+    // module: require.resolve('./context'),
+    module: cwd + '/server/nexus/context.ts',
     export: 'ApiContext',
   },
   sourceTypes: {

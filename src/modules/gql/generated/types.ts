@@ -70,8 +70,12 @@ export type QueryUsersConnectionArgs = {
 export interface User {
   __typename?: 'User';
   active: Scalars['Boolean'];
+  blocked: Scalars['Boolean'];
   /** Классы для оформления меню в зависимости от статуса пользователя */
   cls?: Maybe<Scalars['String']>;
+  createdon: Scalars['DateTime'];
+  email?: Maybe<Scalars['String']>;
+  fullname?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   username: Scalars['String'];
 }

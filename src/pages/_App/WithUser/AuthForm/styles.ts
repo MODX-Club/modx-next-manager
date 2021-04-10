@@ -114,8 +114,15 @@ export const AuthFormStyled = styled.form`
       color: #fff;
       text-align: center;
       font-size: 1rem;
-      cursor: pointer;
       transition: background-color 0.2s ease-out;
+
+      &:enabled {
+        cursor: pointer;
+      }
+
+      &:disabled {
+        opacity: 0.7;
+      }
 
       &:hover {
         box-shadow: none;

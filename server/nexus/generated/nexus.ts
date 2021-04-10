@@ -5,6 +5,7 @@
 
 
 import { ApiContext } from "./../context"
+import { MODXListUser } from "./../types/User"
 import { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -56,12 +57,7 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Query: {};
-  User: { // root type
-    active: boolean; // Boolean!
-    cls?: string | null; // String
-    id: number; // Int!
-    username: string; // String!
-  }
+  User: MODXListUser;
   UsersConnectionResponse: { // root type
     total: number; // Int!
     users: NexusGenRootTypes['User'][]; // [User!]!
@@ -93,7 +89,11 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     active: boolean; // Boolean!
+    blocked: boolean; // Boolean!
     cls: string | null; // String
+    createdon: NexusGenScalars['DateTime']; // DateTime!
+    email: string | null; // String
+    fullname: string | null; // String
     id: number; // Int!
     username: string; // String!
   }
@@ -118,7 +118,11 @@ export interface NexusGenFieldTypeNames {
   }
   User: { // field return type name
     active: 'Boolean'
+    blocked: 'Boolean'
     cls: 'String'
+    createdon: 'DateTime'
+    email: 'String'
+    fullname: 'String'
     id: 'Int'
     username: 'String'
   }

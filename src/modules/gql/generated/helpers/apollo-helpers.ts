@@ -14,10 +14,14 @@ export type QueryFieldPolicy = {
 	user?: FieldPolicy<any> | FieldReadFunction<any>,
 	usersConnection?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserKeySpecifier = ('active' | 'cls' | 'id' | 'username' | UserKeySpecifier)[];
+export type UserKeySpecifier = ('active' | 'blocked' | 'cls' | 'createdon' | 'email' | 'fullname' | 'id' | 'username' | UserKeySpecifier)[];
 export type UserFieldPolicy = {
 	active?: FieldPolicy<any> | FieldReadFunction<any>,
+	blocked?: FieldPolicy<any> | FieldReadFunction<any>,
 	cls?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdon?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	fullname?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	username?: FieldPolicy<any> | FieldReadFunction<any>
 };

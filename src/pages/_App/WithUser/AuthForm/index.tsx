@@ -193,12 +193,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess, ...other }) => {
 
             <AuthFormFields>{fields}</AuthFormFields>
 
-            <button type="submit">Отправить</button>
+            <button type="submit" disabled={inRequest}>
+              Отправить
+            </button>
           </AuthFormStyled>
         </AuthFormWrapperStyled>
       </>
     )
-  }, [error, errors, onSubmit, other])
+  }, [error, errors, onSubmit, inRequest, other])
 }
 
 export default AuthForm

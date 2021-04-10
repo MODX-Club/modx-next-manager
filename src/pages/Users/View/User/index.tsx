@@ -12,6 +12,8 @@ const UsersViewUser: React.FC<UsersViewUserProps> = ({ user }) => {
         <GridTableItemStyled className={user.cls || undefined}>
           <GridTableAttributeStyled> {user.id}</GridTableAttributeStyled>
           <GridTableAttributeStyled> {user.username}</GridTableAttributeStyled>
+          <GridTableAttributeStyled> {user.fullname}</GridTableAttributeStyled>
+          <GridTableAttributeStyled> {user.email}</GridTableAttributeStyled>
           <GridTableAttributeStyled>
             {' '}
             {user.active ? 'Yes' : 'No'}

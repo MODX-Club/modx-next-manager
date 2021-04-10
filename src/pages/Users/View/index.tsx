@@ -28,6 +28,7 @@ const UsersView: React.FC<UsersViewProps> = ({
       const uri = new URI()
 
       uri.setQuery({
+        page: undefined,
         [name]: value || undefined,
       })
 
@@ -59,6 +60,8 @@ const UsersView: React.FC<UsersViewProps> = ({
             <GridTableItemStyled>
               <GridTableAttributeStyled>ID</GridTableAttributeStyled>
               <GridTableAttributeStyled>Username</GridTableAttributeStyled>
+              <GridTableAttributeStyled>Fullname</GridTableAttributeStyled>
+              <GridTableAttributeStyled>Email</GridTableAttributeStyled>
               <GridTableAttributeStyled>Active</GridTableAttributeStyled>
             </GridTableItemStyled>
 

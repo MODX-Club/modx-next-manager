@@ -93,9 +93,9 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
           if (ctx.res?.cookie) {
             ctx.res?.cookie(setCookie, undefined)
           } else {
-          /**
-           * Если нет, то используем хранилище
-           */
+            /**
+             * Если нет, то используем хранилище
+             */
             cookiesStore[token] = setCookie
           }
 
@@ -190,6 +190,8 @@ export const usersConnection: FieldResolver<
           users.push(n)
         }
       })
+
+      // console.log("User without email", users.filter(n => !n.email));
 
       return {
         users,

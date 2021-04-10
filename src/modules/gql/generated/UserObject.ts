@@ -9,13 +9,13 @@
 import { UserListFragment } from './UserList';
 import { gql } from '@apollo/client';
 import { UserListFragmentDoc } from './UserList';
-export type UserFragment = (
+export type UserObjectFragment = (
   { __typename?: 'User' }
   & UserListFragment
 );
 
-export const UserFragmentDoc = gql`
-    fragment User on User {
+export const UserObjectFragmentDoc = gql`
+    fragment UserObject on User {
   ...UserList
 }
     ${UserListFragmentDoc}`;

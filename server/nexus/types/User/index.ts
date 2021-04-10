@@ -10,6 +10,8 @@ import {
 import { NexusGenScalars } from '../../generated/nexus'
 import { signin, usersConnection, user } from './resolvers'
 
+import moment from 'moment'
+
 /**
  * Тип ответа от MODX
  */
@@ -25,13 +27,15 @@ export type MODXListUser = {
   primary_group: number
   sudo: boolean
   createdon: NexusGenScalars['DateTime']
-  fullname: string
-  email: string
+  fullname: string | null
+  email: string | null
   blocked: boolean
   cls?: string
   remote_key: null | unknown
   remote_data: null | unknown
-  session_stale: null | unknown
+
+  // ['web', 'mgr']
+  session_stale: string[] | null
   hash_class: string
 }
 
@@ -66,10 +70,23 @@ export type MODXUser = MODXListUser & {
 
 export const User = objectType({
   name: 'User',
+  sourceType: {
+    module: process.cwd() + '/server/nexus/types/User',
+    export: 'MODXListUser',
+  },
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('username')
+    t.string('fullname')
+    t.string('email')
     t.nonNull.boolean('active')
+    t.nonNull.boolean('blocked')
+    t.nonNull.field('createdon', {
+      type: 'DateTime',
+      resolve(user) {
+        return moment(user.createdon).toDate()
+      },
+    })
     t.string('cls', {
       description:
         'Классы для оформления меню в зависимости от статуса пользователя',

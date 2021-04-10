@@ -4,6 +4,12 @@ query me($where: UserWhereUniqueInput!) {
   }
 }
 
+query user($where: UserWhereUniqueInput!) {
+  user(where: $where) {
+    ...UserObject
+  }
+}
+
 query usersConnection($where: UserWhereInput, $start: Int, $limit: Int) {
   usersConnection(where: $where, start: $start, limit: $limit) {
     total
@@ -31,14 +37,18 @@ mutation signin(
 fragment UserList on User {
   id
   username
+  fullname
+  email
   active
+  blocked
+  createdon
   cls
 }
 
-fragment User on User {
+fragment UserObject on User {
   ...UserList
 }
 
 fragment MeUser on User {
-  ...User
+  ...UserObject
 }
