@@ -16,7 +16,7 @@ app.prepare().then(() => {
 
   graphqlServer.applyMiddleware({
     app: server,
-    path: '/api/graphql',
+    path: '/api/dev',
   })
 
   server.all('*', (req, res) => {
