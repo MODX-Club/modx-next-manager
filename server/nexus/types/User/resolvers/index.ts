@@ -59,7 +59,7 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
       }).then(async (r) => {
         const response2 = await r.text()
 
-        console.log('response2', response2)
+        // console.log('response2', response2)
 
         /**
          * ищем в ответе токен
@@ -78,6 +78,8 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
         const userId = userIdMatch && userIdMatch[1]
 
         console.log('userId', userId)
+
+        console.log('ctx.res keys', ctx.res && Object.keys(ctx.res))
 
         if (token && userId) {
           /**
