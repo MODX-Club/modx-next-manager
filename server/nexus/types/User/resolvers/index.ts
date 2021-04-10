@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { FieldResolver } from 'nexus'
-import { NexusGenObjects } from 'server/nexus/generated/nexus'
+import { NexusGenObjects } from '../../../generated/nexus'
 import { MODXListUser, MODXUser } from '..'
 
 /**

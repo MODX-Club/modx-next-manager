@@ -29,8 +29,8 @@ export const schema = makeSchema({
     debug: process.env.NODE_ENV === 'development',
     modules: [],
   },
-  prettierConfig:
-    process.env.NODE_ENV === 'development'
-      ? require.resolve(process.cwd() + '/.prettierrc')
-      : undefined,
+  // prettierConfig:
+  //   process.env.NODE_ENV === 'development'
+  //     ? require.resolve(process.cwd() + '/.prettierrc')
+  //     : undefined,
 })

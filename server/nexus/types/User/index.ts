@@ -7,7 +7,7 @@ import {
   objectType,
   stringArg,
 } from 'nexus'
-import { NexusGenScalars } from 'server/nexus/generated/nexus'
+import { NexusGenScalars } from '../../generated/nexus'
 import { signin, usersConnection, user } from './resolvers'
 
 /**
