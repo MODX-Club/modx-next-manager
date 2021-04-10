@@ -57,9 +57,11 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
             /**
              * ищем в ответе токен
              */
-            const tokenMatch = response2.match(/"auth":"(.+?)"/)
+            const tokenMatch = response2.match(/"?auth"?: ?"(.+?)"/)
 
             const token = tokenMatch && tokenMatch[1]
+
+            // console.log('token', token);
 
             /**
              * ищем в ответе ID пользователя. Без него мы не сможем получать объект текущего пользователя
@@ -67,6 +69,8 @@ export const signin: FieldResolver<'Mutation', 'signin'> = async (
             const userIdMatch = response2.match(/user: "(\d+?)"/)
 
             const userId = userIdMatch && userIdMatch[1]
+
+            // console.log('userId', userId);
 
             if (token && userId) {
               /**
