@@ -33,6 +33,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  UserWhereInput: {
+    // input type
+    query?: string | null // String
+  }
   UserWhereUniqueInput: {
     // input type
     id: number // Int!
@@ -61,6 +65,7 @@ export interface NexusGenObjects {
   User: {
     // root type
     active: boolean // Boolean!
+    cls?: string | null // String
     id: number // Int!
     username: string // String!
   }
@@ -98,6 +103,7 @@ export interface NexusGenFieldTypes {
   User: {
     // field return type
     active: boolean // Boolean!
+    cls: string | null // String
     id: number // Int!
     username: string // String!
   }
@@ -127,6 +133,7 @@ export interface NexusGenFieldTypeNames {
   User: {
     // field return type name
     active: 'Boolean'
+    cls: 'String'
     id: 'Int'
     username: 'String'
   }
@@ -159,6 +166,7 @@ export interface NexusGenArgTypes {
       // args
       limit?: number | null // Int
       start?: number | null // Int
+      where?: NexusGenInputs['UserWhereInput'] | null // UserWhereInput
     }
   }
 }

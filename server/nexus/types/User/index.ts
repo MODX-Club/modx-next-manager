@@ -1,4 +1,5 @@
 import {
+  arg,
   extendType,
   inputObjectType,
   intArg,
@@ -69,6 +70,10 @@ export const User = objectType({
     t.nonNull.int('id')
     t.nonNull.string('username')
     t.nonNull.boolean('active')
+    t.string('cls', {
+      description:
+        'Классы для оформления меню в зависимости от статуса пользователя',
+    })
   },
 })
 
@@ -89,8 +94,19 @@ export const UsersConnectionResponse = objectType({
 
 export const UserWhereUniqueInput = inputObjectType({
   name: 'UserWhereUniqueInput',
+  description: 'Условие поиска уникального пользователя',
   definition(t) {
     t.nonNull.int('id')
+  },
+})
+
+export const UserWhereInput = inputObjectType({
+  name: 'UserWhereInput',
+  description: 'Условия поиска пользователей',
+  definition(t) {
+    t.string('query', {
+      description: 'Поиск по юзернейму, имени, емейлу',
+    })
   },
 })
 
@@ -131,6 +147,9 @@ export const UserQuery = extendType({
         }),
         limit: intArg({
           description: 'Сколько всего записей получить',
+        }),
+        where: arg({
+          type: 'UserWhereInput',
         }),
       },
       resolve: usersConnection,

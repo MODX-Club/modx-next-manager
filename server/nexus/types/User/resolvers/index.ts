@@ -138,43 +138,31 @@ export const user: FieldResolver<'Query', 'user' | 'me'> = async (
 export const usersConnection: FieldResolver<
   'Query',
   'usersConnection'
-> = async (_, args, ctx) => {
+> = async (_, { limit, start, where }, ctx) => {
   const formBody = new URLSearchParams()
 
   formBody.append('action', 'Security/User/GetList')
 
-  type Name = keyof typeof args
+  type Name = keyof NonNullable<typeof where>
 
-  Object.keys(args).forEach((name) => {
-    const value = args[name as Name]
+  where &&
+    Object.keys(where).forEach((name) => {
+      const value = where[name as Name]
 
-    if (value !== null && value !== undefined) {
-      formBody.append(name, value.toString())
-    }
-  })
+      if (value !== null && value !== undefined) {
+        formBody.append(name, value.toString())
+      }
+    })
+
+  start && formBody.append('start', start.toString())
+  limit && formBody.append('limit', limit.toString())
 
   const result = await ctx
     .connectorRequest<{
       results?: MODXListUser[]
     }>(formBody, ctx)
     .then(async (r) => {
-      // const response = await r.text()
-
-      // console.log('users response', response)
-      // console.log('users response headers', r.headers)
-      // try {
-      //   const data = JSON.parse(response)
-
-      //   console.log('data', data)
-
-      //   return data.results || []
-      // } catch (error) {
-      //   throw new Error(error)
-      // }
-
       const users: NexusGenObjects['User'][] = []
-
-      // return r.results || [];
 
       r.results?.forEach((n) => {
         if (n) {
@@ -187,7 +175,6 @@ export const usersConnection: FieldResolver<
         total: r.total || 0,
       }
     })
-  // .catch(console.error)
 
   return result
 }

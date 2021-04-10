@@ -8,23 +8,28 @@
 
 import * as Types from './types';
 
+import { MeUserFragment } from './MeUser';
 import { gql } from '@apollo/client';
+import { MeUserFragmentDoc } from './MeUser';
 import * as Apollo from '@apollo/client';
 export type MeQueryVariables = Types.Exact<{
   where: Types.UserWhereUniqueInput;
 }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: Types.Maybe<{ __typename?: 'User', id: number }> };
+export type MeQuery = { __typename?: 'Query', me?: Types.Maybe<(
+    { __typename?: 'User' }
+    & MeUserFragment
+  )> };
 
 
 export const MeDocument = gql`
     query me($where: UserWhereUniqueInput!) {
   me(where: $where) {
-    id
+    ...MeUser
   }
 }
-    `;
+    ${MeUserFragmentDoc}`;
 
 /**
  * __useMeQuery__

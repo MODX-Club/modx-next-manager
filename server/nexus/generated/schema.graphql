@@ -42,15 +42,34 @@ type Query {
     Сколько записей пропустить
     """
     start: Int
+    where: UserWhereInput
   ): UsersConnectionResponse!
 }
 
 type User {
   active: Boolean!
+
+  """
+  Классы для оформления меню в зависимости от статуса пользователя
+  """
+  cls: String
   id: Int!
   username: String!
 }
 
+"""
+Условия поиска пользователей
+"""
+input UserWhereInput {
+  """
+  Поиск по юзернейму, имени, емейлу
+  """
+  query: String
+}
+
+"""
+Условие поиска уникального пользователя
+"""
 input UserWhereUniqueInput {
   id: Int!
 }

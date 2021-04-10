@@ -10,7 +10,7 @@ import {
   AppInitialPropsCustom,
   NextPageContextCustom,
 } from './interfaces'
-import { NextSeo, NextSeoProps } from 'next-seo'
+import { DefaultSeo, DefaultSeoProps } from 'next-seo'
 import Page404 from '../_Error/404'
 import ErrorPage from '../_Error'
 import { GlobalStyle } from 'src/theme/GlobalStyle'
@@ -18,6 +18,7 @@ import WithUser from './WithUser'
 import { Context, ContextValue } from './Context'
 import { useMeQuery } from 'src/modules/gql/generated'
 import { AuthFormProps } from './WithUser/AuthForm/interfaces'
+import MainMenu from 'src/components/MainMenu'
 
 const withWs = false
 
@@ -85,7 +86,14 @@ const App: MainApp<AppProps> = ({ Component, pageProps }) => {
   }, [user])
 
   const content = useMemo(() => {
-    const meta: NextSeoProps = {}
+    // TODO https://github.com/garmeeh/next-seo/issues/710
+
+    const meta: DefaultSeoProps = {
+      noindex: true,
+      nofollow: true,
+      dangerouslySetAllPagesToNoIndex: true,
+      dangerouslySetAllPagesToNoFollow: true,
+    }
 
     let content = null
 
@@ -111,6 +119,7 @@ const App: MainApp<AppProps> = ({ Component, pageProps }) => {
        */
       content = (
         <WithUser user={user} onAuthSuccess={onAuthSuccess}>
+          <MainMenu />
           <Component {...pageProps} />
         </WithUser>
       )
@@ -118,7 +127,7 @@ const App: MainApp<AppProps> = ({ Component, pageProps }) => {
 
     return (
       <>
-        <NextSeo {...meta} />
+        <DefaultSeo {...meta} />
         {content}
       </>
     )

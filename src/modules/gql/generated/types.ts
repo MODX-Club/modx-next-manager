@@ -64,15 +64,25 @@ export type QueryUserArgs = {
 export type QueryUsersConnectionArgs = {
   limit?: Maybe<Scalars['Int']>;
   start?: Maybe<Scalars['Int']>;
+  where?: Maybe<UserWhereInput>;
 };
 
 export interface User {
   __typename?: 'User';
   active: Scalars['Boolean'];
+  /** Классы для оформления меню в зависимости от статуса пользователя */
+  cls?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   username: Scalars['String'];
 }
 
+/** Условия поиска пользователей */
+export interface UserWhereInput {
+  /** Поиск по юзернейму, имени, емейлу */
+  query?: Maybe<Scalars['String']>;
+}
+
+/** Условие поиска уникального пользователя */
 export interface UserWhereUniqueInput {
   id: Scalars['Int'];
 }

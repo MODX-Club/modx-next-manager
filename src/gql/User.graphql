@@ -1,6 +1,15 @@
 query me($where: UserWhereUniqueInput!) {
   me(where: $where) {
-    id
+    ...MeUser
+  }
+}
+
+query usersConnection($where: UserWhereInput, $start: Int, $limit: Int) {
+  usersConnection(where: $where, start: $start, limit: $limit) {
+    total
+    users {
+      ...UserList
+    }
   }
 }
 
@@ -17,4 +26,19 @@ mutation signin(
     token
     userId
   }
+}
+
+fragment UserList on User {
+  id
+  username
+  active
+  cls
+}
+
+fragment User on User {
+  ...UserList
+}
+
+fragment MeUser on User {
+  ...User
 }
