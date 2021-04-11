@@ -4,6 +4,8 @@ export const MainMenuStyled = styled.nav`
   background: #234368;
   padding: 10px 0;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 
   a {
     color: #fff;
@@ -11,6 +13,14 @@ export const MainMenuStyled = styled.nav`
   }
 
   > * {
-    margin: 20px;
+    margin: 0 20px;
+  }
+
+  .separator {
+    flex: 1;
+  }
+
+  button {
+    cursor: pointer;
   }
 `

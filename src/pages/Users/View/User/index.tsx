@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { useMemo } from 'react'
 import {
   GridTableAttributeStyled,
@@ -11,7 +12,10 @@ const UsersViewUser: React.FC<UsersViewUserProps> = ({ user }) => {
       <>
         <GridTableItemStyled className={user.cls || undefined}>
           <GridTableAttributeStyled> {user.id}</GridTableAttributeStyled>
-          <GridTableAttributeStyled> {user.username}</GridTableAttributeStyled>
+          <GridTableAttributeStyled>
+            {' '}
+            <Link href={`/users/${user.id}`}>{user.username}</Link>
+          </GridTableAttributeStyled>
           <GridTableAttributeStyled> {user.fullname}</GridTableAttributeStyled>
           <GridTableAttributeStyled> {user.email}</GridTableAttributeStyled>
           <GridTableAttributeStyled>
